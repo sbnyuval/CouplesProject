@@ -1,3 +1,4 @@
+
 import pygame
 import consts
 import random
@@ -42,10 +43,10 @@ def draw_screen(screen, soldier, flag, grass, grass_positions, player_x, player_
     screen.blit(flag, (flag_x, flag_y))
     screen.blit(soldier, (player_x, player_y))
     pygame.display.flip()
+import sys
 def main():
     screen, clock = init_game()
     soldier_resized, flag_resized, grass_resized = Loading_assets()
-
     player_x, player_y = 0, 0
     flag_x = consts.WINDOW_WIDTH - consts.FLAG_WIDTH
     flag_y = consts.WINDOW_HEIGHT - consts.FLAG_HEIGHT
@@ -63,7 +64,7 @@ def main():
             screen, soldier_resized, flag_resized, grass_resized, grass_positions, player_x, player_y, flag_x, flag_y
         )
     pygame.quit()
+    sys.exit()
 if __name__ == "__main__":
     main()
-
 

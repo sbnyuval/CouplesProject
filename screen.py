@@ -23,3 +23,17 @@ def ran_screen():
         pygame.display.flip()
         clock.tick(60)
     pygame.quit()
+def init_game():
+    pygame.init()
+    screen = pygame.display.set_mode((consts.WINDOW_WIDTH, consts.WINDOW_HEIGHT))
+    pygame.display.set_caption("Incident Review")
+    clock = pygame.time.Clock()
+    return screen, clock
+def draw_screen(screen, soldier, flag, grass, grass_positions, player_x, player_y, flag_x, flag_y):
+    screen.fill(consts.DARK_GREEN)
+    for pos in grass_positions:
+        screen.blit(grass, pos)
+    screen.blit(flag, (flag_x, flag_y))
+    screen.blit(soldier, (player_x, player_y))
+    pygame.display.flip()
+
