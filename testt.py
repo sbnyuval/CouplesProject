@@ -1,10 +1,13 @@
+
 import pygame
 import consts
 import random
+import sys
+
 def init_game():
     pygame.init()
     screen = pygame.display.set_mode((consts.WINDOW_WIDTH, consts.WINDOW_HEIGHT))
-    pygame.display.set_caption("The Flag")
+    pygame.display.set_caption("Incident Review")
     clock = pygame.time.Clock()
     return screen, clock
 def Loading_assets():
@@ -17,12 +20,26 @@ def Loading_assets():
         flag_image, (consts.FLAG_WIDTH, consts.FLAG_HEIGHT)
     )
     grass_image = pygame.image.load("grass.png")
-    grass_resized = pygame.transform.scale(grass_image, (consts.GRASS_WIDTH, consts.GRASS_HEIGHT))
+    grass_resized = pygame.transform.scale(
+        grass_image, (consts.GRASS_WIDTH, consts.GRASS_HEIGHT)
+    )
     return soldier_resized, flag_resized, grass_resized
 def Incident_Handling():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:
+                print("You pressed a key.Enter!")
+            elif event.key == pygame.K_UP:
+                print("You clicked the up arrow!")
+            elif event.key == pygame.K_DOWN:
+                print("You clicked the down arrow!")
+            elif event.key == pygame.K_LEFT:
+                print("You pressed the left arrow!")
+            elif event.key == pygame.K_RIGHT:
+                print("You pressed the right arrow!")
+
     return True
 def update_player_position(x, y):
     keys = pygame.key.get_pressed()
@@ -45,7 +62,6 @@ def draw_screen(screen, soldier, flag, grass, grass_positions, player_x, player_
 def main():
     screen, clock = init_game()
     soldier_resized, flag_resized, grass_resized = Loading_assets()
-
     player_x, player_y = 0, 0
     flag_x = consts.WINDOW_WIDTH - consts.FLAG_WIDTH
     flag_y = consts.WINDOW_HEIGHT - consts.FLAG_HEIGHT
@@ -63,7 +79,7 @@ def main():
             screen, soldier_resized, flag_resized, grass_resized, grass_positions, player_x, player_y, flag_x, flag_y
         )
     pygame.quit()
+    sys.exit()
 if __name__ == "__main__":
     main()
-
 
