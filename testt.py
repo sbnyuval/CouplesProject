@@ -24,8 +24,20 @@ def Incident_Handling():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:
+                print("You pressed a key.Enter!")
+            elif event.key == pygame.K_UP:
+                print("You clicked the up arrow!")
+            elif event.key == pygame.K_DOWN:
+                print("You clicked the down arrow!")
+            elif event.key == pygame.K_LEFT:
+                print("You pressed the left arrow!")
+            elif event.key == pygame.K_RIGHT:
+                print("You pressed the right arrow!")
+
     return True
-def update_player_position(x, y):
+def move_player(x, y):
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
         x -= 5

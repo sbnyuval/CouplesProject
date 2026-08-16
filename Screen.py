@@ -1,9 +1,6 @@
 import pygame
 import consts
-pygame.init()
-screen = pygame.display.set_mode((consts.WINDOW_WIDTH, consts.WINDOW_HEIGHT))
-pygame.display.set_caption("The Flag")
-clock = pygame.time.Clock()
+
 def get_flag():
     flag_image = pygame.image.load("flag.png")
     flag_resized = pygame.transform.scale(flag_image, (consts.FLAG_WIDTH, consts.FLAG_WIDTH))
