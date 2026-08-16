@@ -10,12 +10,10 @@ def init_game():
 def Loading_assets():
     soldier_image = pygame.image.load(consts.SOLDIER_IMG)
     soldier_resized = pygame.transform.scale(
-        soldier_image, (consts.SOLDIER_BODY_WIDTH, consts.SOLDIER_BODY_HEIGHT)
-    )
+        soldier_image, (consts.SOLDIER_BODY_WIDTH, consts.SOLDIER_BODY_HEIGHT))
     flag_image = pygame.image.load("flag.png")
     flag_resized = pygame.transform.scale(
-        flag_image, (consts.FLAG_WIDTH, consts.FLAG_HEIGHT)
-    )
+        flag_image, (consts.FLAG_WIDTH, consts.FLAG_HEIGHT))
     grass_image = pygame.image.load("grass.png")
     grass_resized = pygame.transform.scale(grass_image, (consts.GRASS_WIDTH, consts.GRASS_HEIGHT))
     return soldier_resized, flag_resized, grass_resized
@@ -42,7 +40,7 @@ def draw_screen(screen, soldier, flag, grass, grass_positions, player_x, player_
     screen.blit(flag, (flag_x, flag_y))
     screen.blit(soldier, (player_x, player_y))
     pygame.display.flip()
-def main():
+def main1():
     screen, clock = init_game()
     soldier_resized, flag_resized, grass_resized = Loading_assets()
 
@@ -63,7 +61,6 @@ def main():
             screen, soldier_resized, flag_resized, grass_resized, grass_positions, player_x, player_y, flag_x, flag_y
         )
     pygame.quit()
-if __name__ == "__main__":
-    main()
+main1()
 
 
