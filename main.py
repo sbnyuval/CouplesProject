@@ -1,8 +1,10 @@
 import pygame
 import consts
-import screen
+import Screen
 import soldier
 import game_field
+import random
+import sys
 
 
 def main():
@@ -11,7 +13,7 @@ def main():
     pygame.display.set_caption("The Flag")
     clock = pygame.time.Clock()
     screen, clock = Screen.init_game()
-    soldier_resized, flag_resized, grass_resized = Loading_assets()
+    soldier_resized, flag_resized, grass_resized = game_field.Loading_assets()
     player_x, player_y = 0, 0
     flag_x = consts.WINDOW_WIDTH - consts.FLAG_WIDTH
     flag_y = consts.WINDOW_HEIGHT - consts.FLAG_HEIGHT
@@ -25,13 +27,12 @@ def main():
         clock.tick(60)
         running = Incident_Handling()
         player_x, player_y = update_player_position(player_x, player_y)
-        draw_screen(
+        Screen.draw_screen(
             screen, soldier_resized, flag_resized, grass_resized, grass_positions, player_x, player_y, flag_x, flag_y
         )
     pygame.quit()
     sys.exit()
-if __name__ == "__main__":
-    main()
+
 def Incident_Handling():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -77,3 +78,5 @@ def update_player_position(x, y):
     pygame.quit()
 
 
+if __name__ == "__main__":
+    main()

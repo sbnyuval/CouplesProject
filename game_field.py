@@ -1,5 +1,6 @@
+import pygame
 import consts
-import screen
+import Screen
 board = []
 def create():
     for row in range(consts.BOARD_ROWS):
