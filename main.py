@@ -48,7 +48,6 @@ def Incident_Handling():
                 print("You pressed the left arrow!")
             elif event.key == pygame.K_RIGHT:
                 print("You pressed the right arrow!")
-
     return True
 def update_player_position(x, y):
     keys = pygame.key.get_pressed()
@@ -60,23 +59,8 @@ def update_player_position(x, y):
         y -= 5
     if keys[pygame.K_DOWN]:
         y += 5
+        # x = max(0, min(x, consts.WINDOW_WIDTH - consts.SOLDIER_BODY_WIDTH))
+        # y = max(0, min(y, consts.WINDOW_HEIGHT - consts.SOLDIER_BODY_HEIGHT))
     return x, y
-
-    while True:
-        clock = pygame.time.Clock()
-        soldier_image = pygame.image.load(consts.SOLDIER_IMG)
-        soldier_resized = pygame.transform.scale(soldier_image, (consts.SOLDIER_BODY_WIDTH, consts.SOLDIER_BODY_HEIGHT))
-        player_x = 0
-        player_y = 0
-        running = True
-        while running:
-            clock.tick(60)
-            
-            Screen.screen.fill(consts.DARK_GREEN)
-            Screen.screen.blit(soldier_resized, (player_x, player_y))
-            pygame.display.flip()
-    pygame.quit()
-
-
 if __name__ == "__main__":
     main()

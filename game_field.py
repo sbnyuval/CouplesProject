@@ -9,9 +9,6 @@ def create():
             row.append("EMPTY")
         board.append(row)
     return board
-for row in create():
-    print(row)
-    print()
 def Loading_assets():
     soldier_image = pygame.image.load(consts.SOLDIER_IMG)
     soldier_resized = pygame.transform.scale(
