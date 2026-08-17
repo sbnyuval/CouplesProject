@@ -10,9 +10,9 @@ import sys
 def main():
     pygame.init()
     board = game_field.create()
-    screen = pygame.display.set_mode((consts.WINDOW_WIDTH, consts.WINDOW_HEIGHT))
     pygame.display.set_caption("The Flag")
     screen, clock = Screen.init_game()
+    Screen.welcome_message()
     soldier_resized, flag_resized, grass_resized = game_field.Loading_assets()
     flag_x = consts.WINDOW_WIDTH - consts.FLAG_WIDTH
     flag_y = consts.WINDOW_HEIGHT - consts.FLAG_HEIGHT
@@ -23,8 +23,7 @@ def main():
         running = Incident_Handling()
         player_x, player_y = update_player_position(soldier.player_x, soldier.player_y)
         Screen.draw_screen(
-            screen, soldier_resized, flag_resized, grass_resized, grass_positions, player_x, player_y, flag_x, flag_y
-        )
+            screen, soldier_resized, flag_resized, grass_resized, grass_positions, player_x, player_y, flag_x, flag_y)
     pygame.quit()
     sys.exit()
 def Incident_Handling():
