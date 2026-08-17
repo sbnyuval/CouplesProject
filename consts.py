@@ -6,10 +6,10 @@ BOARD_COLS = 50
 FLAG_IMG = "flag.png"
 FLAG_WIDTH = 60
 FLAG_HEIGHT = 80
-
+player_x, player_y = 0 , 0
 MINE_HEIGHT = 40
 MINE_WIDTH = 120
-
+TILE_SIZE = 20
 BOARD_ROWS = 25
 BOARD_SOLS = 50
 
@@ -27,6 +27,7 @@ GRASS_WIDTH = 50
 BACKGROUND_COLOR = (254, 252, 252)
 DARK_GREEN = (0, 100, 0)
 BLACK = (0, 0, 0)
+red = (255, 0, 0)
 
 FONT_NAME = "Calibri"
 LOSE_MESSAGE = "You Lost!"

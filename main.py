@@ -9,9 +9,7 @@ import sys
 
 def main():
     pygame.init()
-    screen = pygame.display.set_mode((consts.WINDOW_WIDTH, consts.WINDOW_HEIGHT))
     pygame.display.set_caption("The Flag")
-    clock = pygame.time.Clock()
     screen, clock = Screen.init_game()
     soldier_resized, flag_resized, grass_resized = game_field.Loading_assets()
     player_x, player_y = 0, 0
@@ -32,7 +30,6 @@ def main():
         )
     pygame.quit()
     sys.exit()
-
 def Incident_Handling():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -59,8 +56,15 @@ def update_player_position(x, y):
         y -= 5
     if keys[pygame.K_DOWN]:
         y += 5
-        # x = max(0, min(x, consts.WINDOW_WIDTH - consts.SOLDIER_BODY_WIDTH))
-        # y = max(0, min(y, consts.WINDOW_HEIGHT - consts.SOLDIER_BODY_HEIGHT))
+    if x < 0:
+        x = 0
+    elif x > consts.WINDOW_WIDTH - consts.SOLDIER_BODY_WIDTH:
+        x = consts.WINDOW_WIDTH - consts.SOLDIER_BODY_WIDTH
+    if y < 0:
+        y = 0
+    elif y > consts.WINDOW_HEIGHT - consts.SOLDIER_BODY_HEIGHT:
+        y = consts.WINDOW_HEIGHT - consts.SOLDIER_BODY_HEIGHT
     return x, y
+
 if __name__ == "__main__":
     main()
