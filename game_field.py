@@ -71,3 +71,9 @@ def append_flag(board):
         for col in range(46, 50):
             board[row][col] = "FLAG"
     return board
+
+def clear_soldier(board):
+    for row in range(len(board)):
+        for col in range(len(board[row])):
+            if board[row][col] in ["SOLDIER_BODY", "SOLDIER_LEGS"]:
+                board[row][col] = "EMPTY" 

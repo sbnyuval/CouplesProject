@@ -10,7 +10,8 @@ import sys
 def main():
     pygame.init()
     empty_board = game_field.create_board()
-    board = game_field.append_mines(empty_board, game_field.create_mines(empty_board))
+    mines = game_field.create_mines(empty_board)
+    board = game_field.append_mines(empty_board, mines)
     game_field.append_soldier_legs(board)
     game_field.append_soldier_body(board)
     game_field.append_flag(board)
@@ -36,12 +37,12 @@ def main():
         if game_status == False:
             running = False
         elif game_status == "enter":
-            Screen.Screen2(game_field.create_mines(board), player_x, player_y)
+            Screen.Screen2(mines, player_x, player_y)
 
         player_x = max(0, min(player_x, consts.WINDOW_WIDTH - consts.SOLDIER_BODY_WIDTH))
         player_y = max(0, min(player_y, consts.WINDOW_HEIGHT - consts.SOLDIER_BODY_HEIGHT))
         Screen.draw_screen(
-            screen, soldier_resized, flag_resized, grass_resized, grass_positions, player_x, player_y, flag_x, flag_y)
+            screen, soldier_resized, flag_resized, grass_resized, grass_positions, player_x - 20, player_y, flag_x, flag_y)
 
     pygame.quit()
     sys.exit()

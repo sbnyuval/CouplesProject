@@ -50,16 +50,14 @@ def draw_screen(screen, soldier, flag, grass, grass_positions, player_x, player_
 
 
 def Screen2(mine_positions, player_x, player_y):
-    print(mine_positions)
 
-    # --- טעינת תמונות מחוץ ללולאה (משפר ביצועים בצורה משמעותית!) ---
     soldier_night_image = pygame.image.load("soldier_nigth.png")
     soldier_night_resized = pygame.transform.scale(soldier_night_image, (consts.FLAG_WIDTH, consts.FLAG_WIDTH))
 
     mine_img = pygame.image.load("mine.png")
     mine_resized = pygame.transform.scale(mine_img, (consts.MINE_WIDTH, consts.MINE_HEIGHT))
 
-    # player_x = player_x * consts.TILE_SIZE - 10
+    # player_x = player_x * consts.TILE_SIZE - 20
     # player_y = player_y * consts.TILE_SIZE
 
     start_time = pygame.time.get_ticks()
@@ -75,7 +73,7 @@ def Screen2(mine_positions, player_x, player_y):
             for y in range(consts.BOARD_ROWS):
                 rect = pygame.Rect(x * consts.TILE_SIZE, y * consts.TILE_SIZE, consts.TILE_SIZE, consts.TILE_SIZE)
                 pygame.draw.rect(screen, consts.DARK_GREEN, rect, 1)
-        screen.blit(soldier_night_resized, (player_x, player_y))
+        screen.blit(soldier_night_resized, (player_x-20, player_y))
 
         for mine in mine_positions:
             screen.blit(mine_resized, (mine[0] * 20, mine[1] * 20))
@@ -96,11 +94,13 @@ def draw_victory_message(screen, font):
     bg_rect = pygame.Rect(text_rect.x - 10, text_rect.y - 10, text_rect.width + 20, text_rect.height + 20)
     pygame.draw.rect(screen, (0, 0, 0), bg_rect)
     screen.blit(text_surface, text_rect)
+
 def draw_defeat_message(screen, font):
     text_surface = font.render("You lose!", True, (255, 0, 0))
     text_rect = text_surface.get_rect(center=(consts.WINDOW_WIDTH // 2, consts.WINDOW_HEIGHT // 2))
     bg_rect = pygame.Rect(text_rect.x - 10, text_rect.y - 10, text_rect.width + 20, text_rect.height + 20)
     pygame.draw.rect(screen, (0, 0, 0), bg_rect)
     screen.blit(text_surface, text_rect)
+
 def welcome_message():
     draw_message(consts.WELCOME_MESSAGE, consts.WELCOME_FONT_SIZE, consts.WELCOME_COLOR, consts.WELCOME_LOCATION)
