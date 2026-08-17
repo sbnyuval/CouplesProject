@@ -1,5 +1,6 @@
 import pygame
 import consts
+import random
 
 screen = pygame.display.set_mode((consts.WINDOW_WIDTH, consts.WINDOW_HEIGHT))
 clock = pygame.time.Clock()
@@ -10,6 +11,13 @@ def get_flag():
     flag_y = (consts.WINDOW_HEIGHT - consts.FLAG_HEIGHT)
     screen.blit(flag_resized, (flag_x, flag_y))
 
+def create_grass():
+    grass_positions = []
+    for i in range(20):
+        grass_x = random.randint(0, consts.WINDOW_WIDTH - consts.GRASS_WIDTH)
+        grass_y = random.randint(0, consts.WINDOW_HEIGHT - consts.GRASS_HEIGHT)
+        grass_positions.append((grass_x, grass_y))
+    return grass_positions
 
 def ran_screen():
     running = True
