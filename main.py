@@ -11,12 +11,11 @@ def main():
     pygame.init()
     empty_board = game_field.create_board()
     board = game_field.append_mines(empty_board, game_field.create_mines(empty_board))
-    for row in range(6):
-        for col in range(2):
-            board[row][col] = "SOLDIER"
+    game_field.append_soldier_legs(board)
+    game_field.append_soldier_body(board)
+    game_field.append_flag(board)
     for row in board:
         print(row)
-    Screen.Screen2(game_field.create_mines(board))
     pygame.display.set_caption("The Flag")
     screen, clock = Screen.init_game()
     Screen.welcome_message()
@@ -26,58 +25,61 @@ def main():
 
     grass_positions = Screen.create_grass()
 
-    player_x = soldier.player_x - 5
+    player_x = soldier.player_x
     player_y = soldier.player_y
 
     running = True
     while running:
         clock.tick(60)
-        running = Incident_Handling()
-        player_x, player_y = update_player_position(player_x, player_y)
+        game_status, player_x, player_y = Incident_Handling(player_x, player_y)
+
+        if game_status == False:
+            running = False
+        elif game_status == "enter":
+            Screen.Screen2(game_field.create_mines(board), player_x, player_y)
+
+        player_x = max(0, min(player_x, consts.WINDOW_WIDTH - consts.SOLDIER_BODY_WIDTH))
+        player_y = max(0, min(player_y, consts.WINDOW_HEIGHT - consts.SOLDIER_BODY_HEIGHT))
         Screen.draw_screen(
             screen, soldier_resized, flag_resized, grass_resized, grass_positions, player_x, player_y, flag_x, flag_y)
-        if Incident_Handling() == "enter":
-            Screen.Screen2(game_field.create_mines())
+
     pygame.quit()
     sys.exit()
 
 
-
-def Incident_Handling():
+def Incident_Handling(x, y):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            return "enter"
+            return False, x, y
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RETURN:
                 print("You pressed a key.Enter!")
+                return "enter", x, y
             elif event.key == pygame.K_UP:
                 print("You clicked the up arrow!")
+                y -= 20
             elif event.key == pygame.K_DOWN:
                 print("You clicked the down arrow!")
+                y += 20
             elif event.key == pygame.K_LEFT:
                 print("You pressed the left arrow!")
+                x -= 20
             elif event.key == pygame.K_RIGHT:
                 print("You pressed the right arrow!")
+                x += 20
+
+    return True, x, y
+
+
+def if_won(board):
+    for row in range(22, 25):
+        for col in range(46, 50):
+            board[row][col] = "SOLDIER_BODY"
     return True
-def update_player_position(x, y):
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
-        x -= 5
-    if keys[pygame.K_RIGHT]:
-        x += 5
-    if keys[pygame.K_UP]:
-        y -= 5
-    if keys[pygame.K_DOWN]:
-        y += 5
-    if x < 0:
-        x = 0
-    elif x > consts.WINDOW_WIDTH - consts.SOLDIER_BODY_WIDTH:
-        x = consts.WINDOW_WIDTH - consts.SOLDIER_BODY_WIDTH
-    if y < 0:
-        y = 0
-    elif y > consts.WINDOW_HEIGHT - consts.SOLDIER_BODY_HEIGHT:
-        y = consts.WINDOW_HEIGHT - consts.SOLDIER_BODY_HEIGHT
-    return x, y
+
+def if_lost(board):
+    pass
 
 if __name__ == "__main__":
     main()

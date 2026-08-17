@@ -29,9 +29,9 @@ def Loading_assets():
     return soldier_resized, flag_resized, grass_resized
 def create_mines(board):
     for i in range(consts.MINE_NUMBER):
-        mine_x = random.choice(range(consts.BOARD_COLS-1))
+        mine_x = random.choice(range(consts.BOARD_COLS-2))
         mine_y = random.choice(range(consts.BOARD_ROWS))
-        if board[mine_y][mine_x-1]  == "MINE" or board[mine_y][mine_x+1] == "MINE" or board[mine_y][mine_x] == "SOLDIER" or mine_x == 0:
+        if board[mine_y][mine_x]  == "MINE" or board[mine_y][mine_x-2]  == "MINE" or board[mine_y][mine_x+2] == "MINE" or board[mine_y][mine_x] == "SOLDIER_LEGS" or board[mine_y][mine_x] == "SOLDIER_BODY" or mine_x == 0:
             i += 1
         else:
             board[mine_y][mine_x] = board[mine_y][mine_x+1] = board[mine_y][mine_x-1] = "MINE"
@@ -52,4 +52,22 @@ def append_mines(board, mine_positions):
         mine_x = mine[0]
         mine_y = mine[1]
         board[mine_y][mine_x] = board[mine_y][mine_x+1] = board[mine_y][mine_x-1] = "MINE"
+    return board
+
+def append_soldier_legs(board):
+    for row in range(3, 4):
+        for col in range(2):
+            board[row][col] = "SOLDIER_LEGS"
+    return board
+
+def append_soldier_body(board):
+    for row in range(0, 3):
+        for col in range(2):
+            board[row][col] = "SOLDIER_BODY"
+    return board
+
+def append_flag(board):
+    for row in range(22, 25):
+        for col in range(46, 50):
+            board[row][col] = "FLAG"
     return board
