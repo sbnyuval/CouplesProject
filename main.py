@@ -9,27 +9,38 @@ import sys
 
 def main():
     pygame.init()
-    board = game_field.create()
+    empty_board = game_field.create_board()
+    board = game_field.append_mines(empty_board, game_field.create_mines())
     pygame.display.set_caption("The Flag")
     screen, clock = Screen.init_game()
     Screen.welcome_message()
     soldier_resized, flag_resized, grass_resized = game_field.Loading_assets()
     flag_x = consts.WINDOW_WIDTH - consts.FLAG_WIDTH
     flag_y = consts.WINDOW_HEIGHT - consts.FLAG_HEIGHT
+
     grass_positions = Screen.create_grass()
+
+    player_x = soldier.player_x - 5
+    player_y = soldier.player_y
+
     running = True
     while running:
         clock.tick(60)
         running = Incident_Handling()
-        player_x, player_y = update_player_position(soldier.player_x, soldier.player_y)
+        player_x, player_y = update_player_position(player_x, player_y)
         Screen.draw_screen(
             screen, soldier_resized, flag_resized, grass_resized, grass_positions, player_x, player_y, flag_x, flag_y)
+        if Incident_Handling() == "enter":
+            Screen.Screen2(game_field.create_mines())
     pygame.quit()
     sys.exit()
+
+
+
 def Incident_Handling():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            return False
+            return "enter"
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RETURN:
                 print("You pressed a key.Enter!")
