@@ -69,13 +69,13 @@ def Screen2(mine_positions):
         player_y = consts.player_y * consts.TILE_SIZE
         screen.blit(soldier_night_resized, (player_x, player_y))
         mine_img = pygame.image.load("mine.png")
-        mine_resized = pygame.transform.scale(mine_img, (consts.MINE_WIDTH, consts.MINE_WIDTH))
+        mine_resized = pygame.transform.scale(mine_img, (consts.MINE_WIDTH, consts.MINE_HEIGHT))
         for mine in mine_positions:
-            screen.blit(mine_resized, mine)
+            screen.blit(mine_resized, (mine[0]*20, mine[1]*20))
         pygame.display.flip()
         clock.tick(60)
 
-Screen2(game_field.create_mines())
+# Screen2(game_field.create_mines())
 def draw_message(message, font_size, color, location):
     font = pygame.font.SysFont(consts.FONT_NAME, font_size)
     text_img = font.render(message, True, color)

@@ -4,6 +4,7 @@ import pygame
 import consts
 import Screen
 board = []
+mine_positions = []
 def create_board():
     for row in range(consts.BOARD_ROWS):
         row = []
@@ -26,21 +27,29 @@ def Loading_assets():
         grass_image, (consts.GRASS_WIDTH, consts.GRASS_HEIGHT))
 
     return soldier_resized, flag_resized, grass_resized
-def create_mines():
-    mine_positions = []
-    x = consts.MINE_NUMBER
-    for i in range(x):
-        mine_x = random.choice(range(consts.BOARD_COLS))
+def create_mines(board):
+    for i in range(consts.MINE_NUMBER):
+        mine_x = random.choice(range(consts.BOARD_COLS-1))
         mine_y = random.choice(range(consts.BOARD_ROWS))
-        mine_positions.append((mine_x, mine_y))
+        if board[mine_y][mine_x-1]  == "MINE" or board[mine_y][mine_x+1] == "MINE" or board[mine_y][mine_x] == "SOLDIER" or mine_x == 0:
+            i += 1
+        else:
+            board[mine_y][mine_x] = board[mine_y][mine_x+1] = board[mine_y][mine_x-1] = "MINE"
+        mine_positions.append([mine_x, mine_y])
     return mine_positions
+
+def create_mines_tuple():
+    mine_positions_tuple = []
+    for mine in mine_positions:
+        mine_x = mine_positions[mine][0]
+        mine_y = mine_positions[mine][1]
+        mine_positions_tuple.append((mine_x, mine_y))
+    return mine_positions_tuple
+
 
 def append_mines(board, mine_positions):
     for mine in mine_positions:
         mine_x = mine[0]
         mine_y = mine[1]
-        if board[mine_y][mine_x-1]  == "EMPTY" and board[mine_y][mine_x+1] == "EMPTY":
-            board[mine_y][mine_x] = board[mine_y][mine_x+1] = board[mine_y][mine_x-1] = "MINE"
-        else:
-            mine += 1
+        board[mine_y][mine_x] = board[mine_y][mine_x+1] = board[mine_y][mine_x-1] = "MINE"
     return board

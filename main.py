@@ -10,7 +10,13 @@ import sys
 def main():
     pygame.init()
     empty_board = game_field.create_board()
-    board = game_field.append_mines(empty_board, game_field.create_mines())
+    board = game_field.append_mines(empty_board, game_field.create_mines(empty_board))
+    for row in range(6):
+        for col in range(2):
+            board[row][col] = "SOLDIER"
+    for row in board:
+        print(row)
+    Screen.Screen2(game_field.create_mines(board))
     pygame.display.set_caption("The Flag")
     screen, clock = Screen.init_game()
     Screen.welcome_message()
