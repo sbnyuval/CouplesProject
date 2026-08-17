@@ -90,5 +90,17 @@ def draw_message(message, font_size, color, location):
     text_img = font.render(message, True, color)
     screen.blit(text_img, location)
 
+def draw_victory_message(screen, font):
+    text_surface = font.render("You Won!", True, (0, 255, 0))
+    text_rect = text_surface.get_rect(center=(consts.WINDOW_WIDTH // 2, consts.WINDOW_HEIGHT // 2))
+    bg_rect = pygame.Rect(text_rect.x - 10, text_rect.y - 10, text_rect.width + 20, text_rect.height + 20)
+    pygame.draw.rect(screen, (0, 0, 0), bg_rect)
+    screen.blit(text_surface, text_rect)
+def draw_defeat_message(screen, font):
+    text_surface = font.render("You lose!", True, (255, 0, 0))
+    text_rect = text_surface.get_rect(center=(consts.WINDOW_WIDTH // 2, consts.WINDOW_HEIGHT // 2))
+    bg_rect = pygame.Rect(text_rect.x - 10, text_rect.y - 10, text_rect.width + 20, text_rect.height + 20)
+    pygame.draw.rect(screen, (0, 0, 0), bg_rect)
+    screen.blit(text_surface, text_rect)
 def welcome_message():
     draw_message(consts.WELCOME_MESSAGE, consts.WELCOME_FONT_SIZE, consts.WELCOME_COLOR, consts.WELCOME_LOCATION)
