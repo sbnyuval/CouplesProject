@@ -1,14 +1,13 @@
 import pygame
 import consts
 import random
+import sys
+
+import game_field
 
 screen = pygame.display.set_mode((consts.WINDOW_WIDTH, consts.WINDOW_HEIGHT))
 clock = pygame.time.Clock()
 
-
-
-screen = pygame.display.set_mode((consts.WINDOW_WIDTH, consts.WINDOW_HEIGHT))
-clock = pygame.time.Clock()
 def get_flag():
     flag_image = pygame.image.load("flag.png")
     flag_resized = pygame.transform.scale(flag_image, (consts.FLAG_WIDTH, consts.FLAG_WIDTH))
@@ -24,7 +23,7 @@ def create_grass():
         grass_positions.append((grass_x, grass_y))
     return grass_positions
 
-def ran_screen():
+def run_screen():
     running = True
     while running:
         for event in pygame.event.get():
@@ -35,10 +34,12 @@ def ran_screen():
         pygame.display.flip()
         clock.tick(60)
     pygame.quit()
+
 def init_game():
     pygame.init()
     pygame.display.set_caption("Incident Review")
     return screen, clock
+
 def draw_screen(screen, soldier, flag, grass, grass_positions, player_x, player_y, flag_x, flag_y):
     screen.fill(consts.DARK_GREEN)
     for pos in grass_positions:
@@ -46,35 +47,35 @@ def draw_screen(screen, soldier, flag, grass, grass_positions, player_x, player_
     screen.blit(flag, (flag_x, flag_y))
     screen.blit(soldier, (player_x, player_y))
     pygame.display.flip()
-def Screen2 ():
+
+def Screen2(mine_positions):
+    print(mine_positions)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT and consts.player_x > 0:
-                    consts.player_x -= 1
-                if event.key == pygame.K_RIGHT and consts.player_x < consts.BOARD_SOLS - 1:
-                    consts.player_x += 1
-                if event.key == pygame.K_UP and consts.player_y > 0:
-                    consts.player_y -= 1
-                if event.key == pygame.K_DOWN and consts.player_y < consts.BOARD_ROWS - 1:
-                    consts.player_y += 1
-
         screen.fill(consts.BLACK)
         for x in range(consts.BOARD_SOLS):
             for y in range(consts.BOARD_ROWS):
                 rect = pygame.Rect(x * consts.TILE_SIZE, y * consts.TILE_SIZE, consts.TILE_SIZE, consts.TILE_SIZE)
                 pygame.draw.rect(screen, consts.DARK_GREEN, rect, 1)
+        soldier_night_image = pygame.image.load("soldier_nigth.png")
 
         player_rect = pygame.Rect(consts.player_x * consts.TILE_SIZE, consts.player_y * consts.TILE_SIZE, consts.TILE_SIZE, consts.TILE_SIZE)
-        pygame.draw.rect(screen, consts.red, player_rect)
+        soldier_night_resized = pygame.transform.scale(soldier_night_image, (consts.FLAG_WIDTH, consts.FLAG_WIDTH))
+
+        player_x = consts.player_x * consts.TILE_SIZE -10
+        player_y = consts.player_y * consts.TILE_SIZE
+        screen.blit(soldier_night_resized, (player_x, player_y))
+        mine_img = pygame.image.load("mine.png")
+        mine_resized = pygame.transform.scale(mine_img, (consts.MINE_WIDTH, consts.MINE_WIDTH))
+        for mine in mine_positions:
+            screen.blit(mine_resized, mine)
         pygame.display.flip()
         clock.tick(60)
-Screen2()
 
-
+Screen2(game_field.create_mines())
 def draw_message(message, font_size, color, location):
     font = pygame.font.SysFont(consts.FONT_NAME, font_size)
     text_img = font.render(message, True, color)
