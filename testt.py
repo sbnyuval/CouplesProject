@@ -36,9 +36,9 @@ def main():
             running = False
         elif game_status == "enter":
             Screen.Screen2(mines, player_x, player_y)
-        player_x = max(0, min(player_x, consts.WINDOW_WIDTH - consts.SOLDIER_BODY_WIDTH))
+        player_x = max(0, min(player_x, consts.WINDOW_WIDTH - consts.SOLDIER_BODY_WIDTH+40))
         player_y = max(0, min(player_y, consts.WINDOW_HEIGHT - consts.SOLDIER_BODY_HEIGHT))
-        if abs(player_x - flag_x) < 30 and abs(player_y - flag_y) < 30:
+        if abs(player_x - flag_x) < 21 and abs(player_y - flag_y) < 21:
             has_won = True
             running = False
         if old_x != player_x or old_y != player_y:
