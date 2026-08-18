@@ -72,14 +72,13 @@ def Incident_Handling(x, y):
 
     return True, x, y
 
-
-def if_won(board):
+def is_won(board):
     for row in range(22, 25):
         for col in range(46, 50):
             board[row][col] = "SOLDIER_BODY"
     return True
 
-def if_lost(board):
+def is_lost(board):
     pass
 
 if __name__ == "__main__":
