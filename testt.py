@@ -5,8 +5,18 @@ import soldier
 import game_field
 import random
 import sys
+
+
 def main():
     pygame.init()
+    empty_board = game_field.create_board()
+    mines = game_field.create_mines(empty_board)
+    board = game_field.append_mines(empty_board, mines)
+    game_field.append_soldier_legs(board)
+    game_field.append_soldier_body(board)
+    game_field.append_flag(board)
+    for row in board:
+        print(row)
     pygame.display.set_caption("The Flag")
     screen, clock = Screen.init_game()
     Screen.welcome_message()
@@ -14,91 +24,88 @@ def main():
     flag_x = consts.WINDOW_WIDTH - consts.FLAG_WIDTH
     flag_y = consts.WINDOW_HEIGHT - consts.FLAG_HEIGHT
     grass_positions = Screen.create_grass()
-    player_x = soldier.player_x - 5
+    player_x = soldier.player_x
     player_y = soldier.player_y
-    font = pygame.font.SysFont("Arial", 50, bold=True)
-    mines_list = []
     running = True
-    won = False
-    lost = False
+    has_won = False
     while running:
         clock.tick(60)
-        event_status = Incident_Handling()
-        if event_status == "enter":
-            mines_list = game_field.create_mines()
-            Screen.Screen2(mines_list)
-        elif event_status is False:
+        old_x, old_y = player_x, player_y
+        game_status, player_x, player_y = Incident_Handling(player_x, player_y)
+        if game_status == False:
             running = False
-        if not won and not lost:
-            player_x, player_y = update_player_position(player_x, player_y)
-            player_rect = pygame.Rect(player_x, player_y, consts.SOLDIER_BODY_WIDTH, consts.SOLDIER_BODY_HEIGHT)
-            flag_rect = pygame.Rect(flag_x, flag_y, consts.FLAG_WIDTH, consts.FLAG_HEIGHT)
-            if player_rect.colliderect(flag_rect):
-                won = True
-            for mine in mines_list:
-                mine_rect = pygame.Rect(mine) if not isinstance(mine, pygame.Rect) else mine
-                if player_rect.colliderect(mine_rect):
-                    lost = True
+        elif game_status == "enter":
+            Screen.Screen2(mines, player_x, player_y)
+        player_x = max(0, min(player_x, consts.WINDOW_WIDTH - consts.SOLDIER_BODY_WIDTH))
+        player_y = max(0, min(player_y, consts.WINDOW_HEIGHT - consts.SOLDIER_BODY_HEIGHT))
+        if abs(player_x - flag_x) < 30 and abs(player_y - flag_y) < 30:
+            has_won = True
+            running = False
+        if old_x != player_x or old_y != player_y:
+            update_soldier_in_matrix(board, old_x, old_y, player_x, player_y)
         Screen.draw_screen(
-            screen, soldier_resized, flag_resized, grass_resized,
-            grass_positions, player_x, player_y, flag_x, flag_y
-        )
-        if won:
-            draw_victory_message(screen, font)
-        elif lost:
-            draw_defeat_message(screen, font)
-        pygame.display.flip()
+            screen, soldier_resized, flag_resized, grass_resized, grass_positions,
+            player_x - 20, player_y, flag_x, flag_y)
+    if has_won:
+        show_win_message(screen)
     pygame.quit()
     sys.exit()
-def draw_victory_message(screen, font):
-    text_surface = font.render("You Won!", True, (0, 255, 0))
-    text_rect = text_surface.get_rect(center=(consts.WINDOW_WIDTH // 2, consts.WINDOW_HEIGHT // 2))
-    bg_rect = pygame.Rect(text_rect.x - 10, text_rect.y - 10, text_rect.width + 20, text_rect.height + 20)
-    pygame.draw.rect(screen, (0, 0, 0), bg_rect)
-    screen.blit(text_surface, text_rect)
-def draw_defeat_message(screen, font):
-    text_surface = font.render("You lose!", True, (255, 0, 0))
-    text_rect = text_surface.get_rect(center=(consts.WINDOW_WIDTH // 2, consts.WINDOW_HEIGHT // 2))
-    bg_rect = pygame.Rect(text_rect.x - 10, text_rect.y - 10, text_rect.width + 20, text_rect.height + 20)
-    pygame.draw.rect(screen, (0, 0, 0), bg_rect)
-    screen.blit(text_surface, text_rect)
-def Incident_Handling():
+def show_win_message(screen):
+    font = pygame.font.SysFont(None, 74)
+    text = font.render('You Won! ', True, (255, 255, 255))
+    text_rect = text.get_rect(center=(consts.WINDOW_WIDTH / 2, consts.WINDOW_HEIGHT / 2))
+    screen.fill((0, 0, 0))
+    screen.blit(text, text_rect)
+    pygame.display.flip()
+    pygame.time.delay(3000)
+def Incident_Handling(x, y):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            return False
+            return False, x, y
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RETURN:
                 print("You pressed a key.Enter!")
-                return "enter"
+                return "enter", x, y
             elif event.key == pygame.K_UP:
                 print("You clicked the up arrow!")
+                y -= 20
             elif event.key == pygame.K_DOWN:
                 print("You clicked the down arrow!")
+                y += 20
             elif event.key == pygame.K_LEFT:
                 print("You pressed the left arrow!")
+                x -= 20
             elif event.key == pygame.K_RIGHT:
                 print("You pressed the right arrow!")
-    return True
-def update_player_position(x, y):
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
-        x -= 5
-    if keys[pygame.K_RIGHT]:
-        x += 5
-    if keys[pygame.K_UP]:
-        y -= 5
-    if keys[pygame.K_DOWN]:
-        y += 5
-    if x < 0:
-        x = 0
-    elif x > consts.WINDOW_WIDTH - consts.SOLDIER_BODY_WIDTH:
-        x = consts.WINDOW_WIDTH - consts.SOLDIER_BODY_WIDTH
+                x += 20
+    return True, x, y
+def update_soldier_in_matrix(board, old_x, old_y, new_x, new_y):
+    CELL_SIZE = 20
+    old_start_row = old_y // CELL_SIZE
+    old_start_col = old_x // CELL_SIZE
+    for r in range(old_start_row, old_start_row + 4):
+        for c in range(old_start_col, old_start_col + 2):
+            if 0 <= r < len(board) and 0 <= c < len(board[0]):
 
-    if y < 0:
-        y = 0
-    elif y > consts.WINDOW_HEIGHT - consts.SOLDIER_BODY_HEIGHT:
-        y = consts.WINDOW_HEIGHT - consts.SOLDIER_BODY_HEIGHT
-    return x, y
+                if board[r][c] in ["SOLDIER_BODY", "SOLDIER_LEGS"]:
+                    board[r][c] = "EMPTY"
+    new_start_row = new_y // CELL_SIZE
+    new_start_col = new_x // CELL_SIZE
+    for r in range(new_start_row, new_start_row + 3):
+        for c in range(new_start_col, new_start_col + 2):
+            if 0 <= r < len(board) and 0 <= c < len(board[0]):
+                board[r][c] = "SOLDIER_BODY"
+    legs_row = new_start_row + 3
+    for c in range(new_start_col, new_start_col + 2):
+        if 0 <= legs_row < len(board) and 0 <= c < len(board[0]):
+            board[legs_row][c] = "SOLDIER_LEGS"
+def is_won(board):
+    for row in range(22, 25):
+        for col in range(46, 50):
+            board[row][col] = "SOLDIER_BODY"
+    return True
+def is_lost(board):
+    pass
 if __name__ == "__main__":
     main()
 
