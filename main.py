@@ -7,11 +7,14 @@ import random
 import sys
 
 
+
 def main():
     pygame.init()
     empty_board = game_field.create_board()
     mines = game_field.create_mines(empty_board)
     board = game_field.append_mines(empty_board, mines)
+    font = pygame.font.SysFont("Arial", 50, bold=True)
+
     game_field.append_soldier_legs(board)
     game_field.append_soldier_body(board)
     game_field.append_flag(board)
@@ -29,25 +32,50 @@ def main():
     player_x = soldier.player_x
     player_y = soldier.player_y
 
+    game_won = False
+    game_lost = False
     running = True
+
     while running:
         clock.tick(60)
         old_x, old_y = player_x, player_y
 
-        game_status, player_x, player_y = Incident_Handling(player_x, player_y)
+        if not game_won:
+            game_status, player_x, player_y = Incident_Handling(player_x, player_y)
 
-        if game_status == False:
-            running = False
-        elif game_status == "enter":
-            Screen.Screen2(mines, player_x, player_y)
+            if game_status == False:
+                running = False
+            elif game_status == "enter":
+                Screen.Screen2(mines, player_x, player_y)
 
-        player_x = max(0, min(player_x, consts.WINDOW_WIDTH - consts.SOLDIER_BODY_WIDTH))
-        player_y = max(0, min(player_y, consts.WINDOW_HEIGHT - consts.SOLDIER_BODY_HEIGHT))
-        if old_x != player_x or old_y != player_y:
-            update_soldier_in_matrix(board, old_x, old_y, player_x, player_y)
+            player_x = max(0, min(player_x, consts.WINDOW_WIDTH - consts.SOLDIER_BODY_WIDTH + 40))
+            player_y = max(0, min(player_y, consts.WINDOW_HEIGHT - consts.SOLDIER_BODY_HEIGHT))
+
+            if old_x != player_x or old_y != player_y:
+                update_soldier_in_matrix(board, old_x, old_y, player_x, player_y)
+            if is_lost(player_x, player_y, mines):
+                game_lost = True
+            elif is_won(board):
+                game_won = True
+        else:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+
         Screen.draw_screen(
-            screen, soldier_resized, flag_resized, grass_resized, grass_positions, player_x - 20, player_y, flag_x, flag_y)
+            screen, soldier_resized, flag_resized, grass_resized, grass_positions, player_x - 20, player_y, flag_x,
+            flag_y)
 
+        if game_won:
+            draw_victory_message(screen, font)
+            pygame.display.flip()
+            pygame.time.delay(3000)
+            running = False
+        elif game_lost:
+            draw_defeat_message(screen, font)
+            pygame.display.flip() # מעדכן את המסך כדי שהשחקן יראה את הטקסט האדום
+            pygame.time.delay(3000) # משהה ל-3 שניות
+            running = False
     pygame.quit()
     sys.exit()
 
@@ -56,7 +84,6 @@ def Incident_Handling(x, y):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return False, x, y
-
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RETURN:
                 print("You pressed a key.Enter!")
@@ -73,51 +100,85 @@ def Incident_Handling(x, y):
             elif event.key == pygame.K_RIGHT:
                 print("You pressed the right arrow!")
                 x += 20
-
     return True, x, y
 
 
 def update_soldier_in_matrix(board, old_x, old_y, new_x, new_y):
-
     CELL_SIZE = 20
-
     old_start_row = old_y // CELL_SIZE
     old_start_col = old_x // CELL_SIZE
 
-    # נניח שהגוף והרגליים תופסים שטח מסוים (למשל 3 שורות על 2 עמודות - יש להתאים למשחק שלך)
-    # ננקה ריבוע זמני מסביב למיקום הישן
     for r in range(old_start_row, old_start_row + 4):
         for c in range(old_start_col, old_start_col + 2):
             if 0 <= r < len(board) and 0 <= c < len(board[0]):
-                # מנקים רק את חלקי החייל, לא דורסים מוקשים או דגל!
                 if board[r][c] in ["SOLDIER_BODY", "SOLDIER_LEGS"]:
                     board[r][c] = "EMPTY"
 
-    # 2. השמת המיקום החדש במטריצה
     new_start_row = new_y // CELL_SIZE
     new_start_col = new_x // CELL_SIZE
 
-    # השמת גוף החייל (למשל 3 השורות הראשונות)
     for r in range(new_start_row, new_start_row + 3):
         for c in range(new_start_col, new_start_col + 2):
             if 0 <= r < len(board) and 0 <= c < len(board[0]):
                 board[r][c] = "SOLDIER_BODY"
 
-    # השמת רגלי החייל (השורה הרביעית מתחת לגוף)
     legs_row = new_start_row + 3
     for c in range(new_start_col, new_start_col + 2):
         if 0 <= legs_row < len(board) and 0 <= c < len(board[0]):
             board[legs_row][c] = "SOLDIER_LEGS"
 
 
+def draw_victory_message(screen, font):
+    text_surface = font.render("You Won!", True, (0, 255, 0))
+    text_rect = text_surface.get_rect(center=(consts.WINDOW_WIDTH // 2, consts.WINDOW_HEIGHT // 2))
+    bg_rect = pygame.Rect(text_rect.x - 10, text_rect.y - 10, text_rect.width + 20, text_rect.height + 20)
+    pygame.draw.rect(screen, (0, 0, 0), bg_rect)
+    screen.blit(text_surface, text_rect)
+
+def draw_defeat_message(screen, font):
+    text_surface = font.render("You Lost!", True, (255, 0, 0))
+    text_rect = text_surface.get_rect(center=(consts.WINDOW_WIDTH // 2, consts.WINDOW_HEIGHT // 2))
+    bg_rect = pygame.Rect(text_rect.x - 10, text_rect.y - 10, text_rect.width + 20, text_rect.height + 20)
+    pygame.draw.rect(screen, (0, 0, 0), bg_rect)
+    screen.blit(text_surface, text_rect)
+
 def is_won(board):
     for row in range(22, 25):
         for col in range(46, 50):
-            board[row][col] = "SOLDIER_BODY"
-    return True
+            if board[row][col] == "SOLDIER_BODY":
+                return True
+    return False
 
-def is_lost(board):
-    pass
+
+def is_lost(player_x, player_y, mines):
+    CELL_SIZE = 20
+
+    # 1. חישוב השורה המדויקת של רגלי החייל במטריצה (לפי update_soldier_in_matrix)
+    legs_row = (player_y // CELL_SIZE) + 3
+
+    # 2. חישוב שתי העמודות שהרגליים תופסות לרוחב
+    start_col = player_x // CELL_SIZE
+    soldier_legs_cols = [start_col, start_col + 1]
+
+    # 3. נעבור על כל מוקש ומוקש ששמור ברשימת המוקשים
+    for mine in mines:
+        # זכור: אצלך בקוד mine[0] הוא ה-X (עמודה) ו-mine[1] הוא ה-Y (שורה)
+        mine_col = mine[0]
+        mine_row = mine[1]
+
+        # אם רגלי החייל נמצאות באותה שורה של המוקש
+        if legs_row == mine_row:
+            # מכיוון שכל מוקש תופס 3 משבצות לרוחב (האמצע, אחד ימינה, אחד שמאלה):
+            mine_occupied_cols = [mine_col - 1, mine_col, mine_col + 1]
+
+            # נבדוק אם אחת ממשבצות הרגליים של החייל נמצאת בתוך תחום המוקש
+            for leg_col in soldier_legs_cols:
+                if leg_col in mine_occupied_cols:
+                    print(f"Boom! Stepped on mine at row {mine_row}, col {mine_col}")
+                    return True
+
+    return False
+
 
 if __name__ == "__main__":
     main()
