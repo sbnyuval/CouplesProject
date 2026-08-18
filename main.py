@@ -32,6 +32,8 @@ def main():
     running = True
     while running:
         clock.tick(60)
+        old_x, old_y = player_x, player_y
+
         game_status, player_x, player_y = Incident_Handling(player_x, player_y)
 
         if game_status == False:
@@ -41,6 +43,8 @@ def main():
 
         player_x = max(0, min(player_x, consts.WINDOW_WIDTH - consts.SOLDIER_BODY_WIDTH))
         player_y = max(0, min(player_y, consts.WINDOW_HEIGHT - consts.SOLDIER_BODY_HEIGHT))
+        if old_x != player_x or old_y != player_y:
+            update_soldier_in_matrix(board, old_x, old_y, player_x, player_y)
         Screen.draw_screen(
             screen, soldier_resized, flag_resized, grass_resized, grass_positions, player_x - 20, player_y, flag_x, flag_y)
 
@@ -71,6 +75,40 @@ def Incident_Handling(x, y):
                 x += 20
 
     return True, x, y
+
+
+def update_soldier_in_matrix(board, old_x, old_y, new_x, new_y):
+
+    CELL_SIZE = 20
+
+    old_start_row = old_y // CELL_SIZE
+    old_start_col = old_x // CELL_SIZE
+
+    # נניח שהגוף והרגליים תופסים שטח מסוים (למשל 3 שורות על 2 עמודות - יש להתאים למשחק שלך)
+    # ננקה ריבוע זמני מסביב למיקום הישן
+    for r in range(old_start_row, old_start_row + 4):
+        for c in range(old_start_col, old_start_col + 2):
+            if 0 <= r < len(board) and 0 <= c < len(board[0]):
+                # מנקים רק את חלקי החייל, לא דורסים מוקשים או דגל!
+                if board[r][c] in ["SOLDIER_BODY", "SOLDIER_LEGS"]:
+                    board[r][c] = "EMPTY"
+
+    # 2. השמת המיקום החדש במטריצה
+    new_start_row = new_y // CELL_SIZE
+    new_start_col = new_x // CELL_SIZE
+
+    # השמת גוף החייל (למשל 3 השורות הראשונות)
+    for r in range(new_start_row, new_start_row + 3):
+        for c in range(new_start_col, new_start_col + 2):
+            if 0 <= r < len(board) and 0 <= c < len(board[0]):
+                board[r][c] = "SOLDIER_BODY"
+
+    # השמת רגלי החייל (השורה הרביעית מתחת לגוף)
+    legs_row = new_start_row + 3
+    for c in range(new_start_col, new_start_col + 2):
+        if 0 <= legs_row < len(board) and 0 <= c < len(board[0]):
+            board[legs_row][c] = "SOLDIER_LEGS"
+
 
 def is_won(board):
     for row in range(22, 25):
