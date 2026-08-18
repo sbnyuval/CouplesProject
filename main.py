@@ -3,7 +3,6 @@ import consts
 import Screen
 import soldier
 import game_field
-import random
 import sys
 
 
@@ -21,7 +20,6 @@ def main():
 
     pygame.display.set_caption("The Flag")
     screen, clock = Screen.init_game()
-    Screen.welcome_message()
     soldier_resized, flag_resized, grass_resized = game_field.Loading_assets()
     flag_x = consts.WINDOW_WIDTH - consts.FLAG_WIDTH
     flag_y = consts.WINDOW_HEIGHT - consts.FLAG_HEIGHT
@@ -35,9 +33,10 @@ def main():
     game_lost = False
 
     while running:
+        Screen.welcome_message()
+
         clock.tick(60)
         old_x, old_y = player_x, player_y
-        Screen.welcome_message()
 
         if not game_won:
             game_status, player_x, player_y = Incident_Handling(player_x, player_y)
@@ -62,6 +61,8 @@ def main():
                     running = False
 
         Screen.draw_screen(screen, soldier_resized, flag_resized, grass_resized, grass_positions, player_x - 20, player_y, flag_x, flag_y)
+        if not game_won and not game_lost:
+            Screen.welcome_message()
 
         if game_won:
             draw_victory_message(screen, font)
@@ -70,8 +71,8 @@ def main():
             running = False
         elif game_lost:
             draw_defeat_message(screen, font)
-            pygame.display.flip() # מעדכן את המסך כדי שהשחקן יראה את הטקסט האדום
-            pygame.time.delay(3000) # משהה ל-3 שניות
+            pygame.display.flip()
+            pygame.time.delay(3000)
             running = False
     pygame.quit()
     sys.exit()

@@ -3,8 +3,6 @@ import consts
 import random
 import sys
 
-import game_field
-
 screen = pygame.display.set_mode((consts.WINDOW_WIDTH, consts.WINDOW_HEIGHT))
 clock = pygame.time.Clock()
 
@@ -49,9 +47,7 @@ def draw_screen(screen, soldier, flag, grass, grass_positions, player_x, player_
     welcome_message()
     pygame.display.flip()
 
-
 def Screen2(mine_positions, player_x, player_y):
-
     soldier_night_image = pygame.image.load("soldier_nigth.png")
     soldier_night_resized = pygame.transform.scale(soldier_night_image, (consts.FLAG_WIDTH, consts.FLAG_WIDTH))
 
@@ -64,7 +60,6 @@ def Screen2(mine_positions, player_x, player_y):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-
         screen.fill(consts.BLACK)
 
         for x in range(consts.BOARD_SOLS):
@@ -75,10 +70,8 @@ def Screen2(mine_positions, player_x, player_y):
 
         for mine in mine_positions:
             screen.blit(mine_resized, (mine[0] * 20, mine[1] * 20))
-
         pygame.display.flip()
         clock.tick(60)
-
 
 def draw_victory_message(screen, font):
     text_surface = font.render("You Won!", True, (0, 255, 0))
@@ -100,4 +93,4 @@ def draw_message(message, font_size, color, location):
     screen.blit(text_img, location)
 
 def welcome_message():
-    draw_message("Welcome to The Flag game. Have Fun!", 1, (255, 255, 255), (20,20))
+    draw_message("Welcome to The Flag game. Have Fun!", 20, (255, 255, 255), (20,20))
