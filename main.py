@@ -37,6 +37,8 @@ def main():
     while running:
         clock.tick(60)
         old_x, old_y = player_x, player_y
+        Screen.welcome_message()
+
         if not game_won:
             game_status, player_x, player_y = Incident_Handling(player_x, player_y)
             if game_status == False:

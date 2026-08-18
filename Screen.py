@@ -46,6 +46,7 @@ def draw_screen(screen, soldier, flag, grass, grass_positions, player_x, player_
         screen.blit(grass, pos)
     screen.blit(flag, (flag_x, flag_y))
     screen.blit(soldier, (player_x, player_y))
+    welcome_message()
     pygame.display.flip()
 
 
@@ -93,5 +94,10 @@ def draw_defeat_message(screen, font):
     pygame.draw.rect(screen, (0, 0, 0), bg_rect)
     screen.blit(text_surface, text_rect)
 
+def draw_message(message, font_size, color, location):
+    font = pygame.font.SysFont(consts.FONT_NAME, font_size)
+    text_img = font.render(message, True, color)
+    screen.blit(text_img, location)
+
 def welcome_message():
-    pass
+    draw_message("Welcome to The Flag game. Have Fun!", 1, (255, 255, 255), (20,20))
