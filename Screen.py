@@ -57,9 +57,6 @@ def Screen2(mine_positions, player_x, player_y):
     mine_img = pygame.image.load("mine.png")
     mine_resized = pygame.transform.scale(mine_img, (consts.MINE_WIDTH, consts.MINE_HEIGHT))
 
-    # player_x = player_x * consts.TILE_SIZE - 20
-    # player_y = player_y * consts.TILE_SIZE
-
     start_time = pygame.time.get_ticks()
     while pygame.time.get_ticks() - start_time < 1000:
         for event in pygame.event.get():
@@ -82,12 +79,6 @@ def Screen2(mine_positions, player_x, player_y):
         clock.tick(60)
 
 
-# Screen2(game_field.create_mines())
-def draw_message(message, font_size, color, location):
-    font = pygame.font.SysFont(consts.FONT_NAME, font_size)
-    text_img = font.render(message, True, color)
-    screen.blit(text_img, location)
-
 def draw_victory_message(screen, font):
     text_surface = font.render("You Won!", True, (0, 255, 0))
     text_rect = text_surface.get_rect(center=(consts.WINDOW_WIDTH // 2, consts.WINDOW_HEIGHT // 2))
@@ -103,4 +94,4 @@ def draw_defeat_message(screen, font):
     screen.blit(text_surface, text_rect)
 
 def welcome_message():
-    draw_message(consts.WELCOME_MESSAGE, consts.WELCOME_FONT_SIZE, consts.WELCOME_COLOR, consts.WELCOME_LOCATION)
+    pass
